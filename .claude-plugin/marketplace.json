@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Marketplace for codex agent collaboration skills",
-    "version": "0.0.3"
+    "version": "0.0.4"
   },
   "plugins": [
     {
       "name": "codex-agent-collaboration",
       "description": "Execute tasks using Codex AI assistant for code analysis, implementation, and collaboration",
-      "version": "0.0.3",
+      "version": "0.0.4",
       "source": "./",
       "strict": false,
       "skills": ["./codex-agent-collaboration"]
