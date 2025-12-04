@@ -24,9 +24,9 @@ The `codex-kkp-cli` is a Codex Agent CLI tool, allowing you to:
 executables/codex-kkp-cli-{platform} --cd=/absolute/path/to/project [options] "<task_description>"
 ```
 
-**Platform Variable**: `{platform}` should be automatically replaced based on current system:
-- `macosx64` - macOS Intel (x86_64)
-- `macosarm64` - macOS Apple Silicon (ARM64)
+**Platform Variable**: `{platform}` should be automatically replaced based on the current system:
+- `macosx64` - macOS x86_64 (Intel)
+- `macosarm64` - macOS ARM64 (Apple Silicon)
 - `linuxx64` - Linux x86_64
 - `linuxarm64` - Linux ARM64
 - `mingwx64` - Windows x86_64
@@ -62,12 +62,8 @@ Returns JSON with `"type": "SUCCESS"` or `"type": "ERROR"`.
   "session": "xxxxxxx",
   "content": {
     "agentMessages": "I've analyzed the code and found...",
-    "fileChanges": [
-      ...
-    ],
-    "nonFatalErrors": [
-      ...
-    ]
+    "fileChanges": [...],   // Optional
+    "nonFatalErrors": [...] // Optional
   }
 }
 ```

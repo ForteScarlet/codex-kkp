@@ -64,8 +64,8 @@ You can download and unzip it, then place the extracted directory in your skills
 (e.g., `<PROJECT_DIR>/.claude/skills/codex-agent-collaboration/`).
 
 This single ZIP file includes executables for all supported platforms:
-- macOS Intel (x86_64) - `executables/codex-kkp-cli-macosx64`
-- macOS Apple Silicon (ARM64) - `executables/codex-kkp-cli-macosarm64`
+- macOS x86_64 (Intel) - `executables/codex-kkp-cli-macosx64`
+- macOS ARM64 (Apple Silicon) - `executables/codex-kkp-cli-macosarm64`
 - Linux x86_64 - `executables/codex-kkp-cli-linuxx64`
 - Linux ARM64 - `executables/codex-kkp-cli-linuxarm64`
 - Windows x86_64 - `executables/codex-kkp-cli-mingwx64`
