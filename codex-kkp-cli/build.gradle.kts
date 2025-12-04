@@ -60,115 +60,82 @@ tasks.register("linkReleaseExecutableMultiplatform") {
 }
 
 /**
- * Register packaging tasks for each platform dynamically.
+ * Unified skill packaging for all platforms.
  *
- * For each Kotlin Native target, this creates two tasks:
- * 1. `prepareSkill{Platform}` - Prepares the skill directory (copies docs + executable)
- * 2. `packageSkill{Platform}` - Creates the ZIP archive using Gradle's native Zip task
- *
- * This separation follows Gradle best practices:
- * - Single responsibility per task
- * - Uses Gradle's built-in Zip task for archive creation
- * - Better incremental build and caching support
+ * Creates a single skill directory containing executables for all platforms,
+ * rather than separate platform-specific skill directories.
  */
-kotlin.targets.withType<KotlinNativeTarget> {
-    val releaseBinary = binaries.findExecutable(NativeBuildType.RELEASE)
 
-    if (releaseBinary != null) {
-        val targetName = name // e.g., "macosX64"
-        val platformName = targetName.lowercase() // e.g., "macosx64"
-        val capitalizedTarget = targetName.replaceFirstChar { it.uppercase() }
-        val skillDirName = "codex-agent-collaboration-$platformName"
-        val skillsOutputDir = layout.buildDirectory.dir("skills")
-        val skillsReleasesOutputDir = layout.buildDirectory.dir("skillsReleases")
+val unifiedSkillDir = layout.buildDirectory.dir("skills/codex-agent-collaboration")
+val skillsReleasesDir = layout.buildDirectory.dir("skillsReleases")
 
-        // The specific output directory for this platform's skill bundle
-        val skillOutputDir = skillsOutputDir.map { it.dir(skillDirName) }
+// Unified preparation task
+val prepareUnifiedSkill = tasks.register<UnifiedSkillPackagingTask>("prepareUnifiedSkill") {
+    group = "distribution"
+    description = "Prepares unified skill bundle with all platform executables"
 
-        // Task 1: Prepare skill directory (copy docs + executable)
-        val prepareTask = tasks.register<SkillPackagingTask>("prepareSkill$capitalizedTarget") {
-            group = "distribution"
-            description = "Prepares skill bundle directory for $targetName platform"
+    // Set executables source directory
+    this.executablesSourceDir.set(layout.buildDirectory.dir("bin"))
 
-            this.platformName.set(platformName)
-            this.kotlinTarget.set(targetName)
-            this.executableFile.set(releaseBinary.outputFile)
-            this.templateDir.set(rootProject.file("claude-code-skills-template"))
-            this.version.set(project.version.toString())
-            this.outputDir.set(skillOutputDir)
+    // Set platform mapping (target name -> platform name)
+    val platforms = kotlin.targets.withType<KotlinNativeTarget>().associate { target ->
+        target.name to target.name.lowercase()
+    }
+    this.platformMapping.set(platforms)
 
-            dependsOn(releaseBinary.linkTaskProvider)
+    this.templateDir.set(rootProject.file("claude-code-skills-template/codex-agent-collaboration"))
+    this.version.set(project.version.toString())
+    this.outputDir.set(unifiedSkillDir)
 
-            // Skip task if binary doesn't exist (e.g., cross-platform build on incompatible host)
-            onlyIf {
-                val binaryFile = releaseBinary.outputFile
-                val exists = binaryFile.exists()
-                if (!exists) {
-                    logger.lifecycle("Skipping $name: binary not available for $targetName on this host OS")
-                }
-                exists
-            }
-        }
+    // Depend on all platform link tasks
+    dependsOn(kotlin.targets.withType<KotlinNativeTarget>()
+        .mapNotNull { it.binaries.findExecutable(NativeBuildType.RELEASE)?.linkTaskProvider })
+}
 
-        // Task 2: Create ZIP archive using Gradle's native Zip task
-        tasks.register<Zip>("packageSkill$capitalizedTarget") {
-            group = "distribution"
-            description = "Packages skill bundle ZIP for $targetName platform"
+// Unified ZIP packaging task
+tasks.register<Zip>("packageUnifiedSkill") {
+    group = "distribution"
+    description = "Packages unified skill bundle ZIP with all platforms"
 
-            dependsOn(prepareTask)
+    dependsOn(prepareUnifiedSkill)
 
-            // Configure ZIP contents - include the skill directory with proper root name
-            from(prepareTask.flatMap { it.outputDir }) {
-                into(skillDirName) // Ensure ZIP has the skill directory as root
-            }
+    from(prepareUnifiedSkill.flatMap { it.outputDir }) {
+        into("codex-agent-collaboration")
+    }
 
-            // Configure ZIP file output
-            archiveBaseName.set(skillDirName)
-            archiveVersion.set("") // No version suffix in filename
-            archiveExtension.set("zip")
-            destinationDirectory.set(skillsReleasesOutputDir)
+    archiveBaseName.set("codex-agent-collaboration")
+    archiveVersion.set("")
+    archiveExtension.set("zip")
+    destinationDirectory.set(skillsReleasesDir)
 
-            // ZIP best practices
-            isPreserveFileTimestamps = false  // Reproducible builds
-            isReproducibleFileOrder = true    // Consistent file order
+    isPreserveFileTimestamps = false
+    isReproducibleFileOrder = true
 
-            // Skip task if binary doesn't exist (same condition as prepare task)
-            onlyIf {
-                val binaryFile = releaseBinary.outputFile
-                val exists = binaryFile.exists()
-                if (!exists) {
-                    logger.lifecycle("Skipping $name: binary not available for $targetName on this host OS")
-                }
-                exists
-            }
-
-            doLast {
-                logger.lifecycle("Created: ${archiveFile.get().asFile.name} (${archiveFile.get().asFile.length() / 1024} KB)")
-            }
-        }
+    doLast {
+        logger.lifecycle("Created: ${archiveFile.get().asFile.name} (${archiveFile.get().asFile.length() / 1024} KB)")
     }
 }
 
 /**
- * Meta task to prepare all platform skill directories (without ZIP).
+ * Meta task to prepare the unified skill bundle (without ZIP).
  */
 tasks.register("prepareAllSkills") {
     group = "distribution"
-    description = "Prepares skill bundle directories for all platforms"
+    description = "Prepares unified skill bundle with all platform executables"
 
-    dependsOn(tasks.matching { it.name.startsWith("prepareSkill") })
+    dependsOn("prepareUnifiedSkill")
 }
 
 /**
- * Meta task to package all platform skill bundles (with ZIP).
+ * Meta task to package the unified skill bundle and standalone executables.
  * This is the main entry point for creating release artifacts.
  */
 tasks.register("packageAllSkills") {
     group = "distribution"
-    description = "Packages skill bundle ZIPs for all platforms"
+    description = "Packages unified skill bundle ZIP and standalone executables"
 
-    // Dynamically depend on all packageSkill tasks
-    dependsOn(tasks.matching { it.name.startsWith("packageSkill") })
+    // Dynamically depend on the unified package task
+    dependsOn("packageUnifiedSkill")
 
     doLast {
         val skillsDirLayout = layout.buildDirectory.dir("skills").get()
@@ -176,26 +143,26 @@ tasks.register("packageAllSkills") {
         val skillsReleasesDir = layout.buildDirectory.dir("skillsReleases").get().asFile
 
         if (skillsDir.exists()) {
-            logger.lifecycle("✓ All skill packages created successfully!")
+            logger.lifecycle("✓ Unified skill package created successfully!")
             logger.lifecycle("  Location: ${skillsDir.absolutePath}")
 
-            val packagingTasks = tasks.withType<SkillPackagingTask>()
-            val skillDirs = packagingTasks.mapNotNull {
-                it.outputDir.asFile.orNull
-            }
-            logger.lifecycle("  Total packages: ${skillDirs.size}")
+            val skillDir = skillsDirLayout.dir("codex-agent-collaboration").asFile
+            val executablesDir = skillDir.resolve("executables")
+            val executables = executablesDir.listFiles()?.filter { it.canExecute() } ?: emptyList()
+            logger.lifecycle("  Platforms included: ${executables.size}")
 
-            for (file in skillDirs) {
-                logger.lifecycle("    - ${file.absolutePath}")
+            for (file in executables) {
+                logger.lifecycle("    - ${file.name} (${file.length() / 1024} KB)")
             }
 
+            // Generate marketplace.json for the unified skill
             val pluginDir = skillsDirLayout.dir(".claude-plugin")
             pluginDir.asFile.mkdirs()
             val marketplaceJsonFile = pluginDir.file("marketplace.json").asFile
-            marketplaceJsonFile.writeText(marketPlaceJson(project.version.toString(), skillDirs.map { it.name }))
+            marketplaceJsonFile.writeText(marketPlaceJson(project.version.toString()))
         }
 
-        // Copy and rename executables to skillsReleases directory
+        // Copy standalone executables to skillsReleases directory
         if (skillsReleasesDir.exists()) {
             logger.lifecycle("\n✓ Preparing standalone executables for release...")
             logger.lifecycle("  Location: ${skillsReleasesDir.absolutePath}")
@@ -211,8 +178,8 @@ tasks.register("packageAllSkills") {
                     val outputFile = releaseBinary.outputFile
 
                     if (outputFile.exists()) {
-                        val extension = if (targetName.equals("mingwX64", true)) ".exe" else ""
-                        val targetFileName = "codex-kkp-cli-$platformName$extension"
+                        // Uniform naming: codex-kkp-cli-{platform} (no .exe extension)
+                        val targetFileName = "codex-kkp-cli-$platformName"
                         val targetFile = File(skillsReleasesDir, targetFileName)
 
                         outputFile.copyTo(targetFile, overwrite = true)
@@ -232,7 +199,7 @@ tasks.register("packageAllSkills") {
     }
 }
 
-private fun marketPlaceJson(version: String, skillDirList: List<String>): String {
+private fun marketPlaceJson(version: String): String {
     // language=JSON
     return """
         {
@@ -247,12 +214,12 @@ private fun marketPlaceJson(version: String, skillDirList: List<String>): String
           },
           "plugins": [
             {
-              "name": "codex-agent-collaboration-skills",
-              "description": "Execute tasks using Codex AI Agent for code analysis, implementation, and collaboration",
-              "version": "$version"
+              "name": "codex-agent-collaboration",
+              "description": "Execute tasks using Codex AI assistant for code analysis, implementation, and collaboration",
+              "version": "$version",
               "source": "./",
               "strict": false,
-              "skills": [${skillDirList.joinToString(separator = ",") { "\"./${it}\"" }}]
+              "skills": ["./codex-agent-collaboration"]
             }
           ]
         }

@@ -18,9 +18,18 @@ The `codex-kkp-cli` is a Codex Agent CLI tool, allowing you to:
 
 ## Usage
 
+### Basic Syntax
+
 ```bash
-executable/codex-kkp-cli --cd=/absolute/path/to/project [options] "<task_description>"
+executables/codex-kkp-cli-{platform} --cd=/absolute/path/to/project [options] "<task_description>"
 ```
+
+**Platform Variable**: `{platform}` should be automatically replaced based on current system:
+- `macosx64` - macOS Intel (x86_64)
+- `macosarm64` - macOS Apple Silicon (ARM64)
+- `linuxx64` - Linux x86_64
+- `linuxarm64` - Linux ARM64
+- `mingwx64` - Windows x86_64
 
 ### Required Parameters
 
@@ -71,13 +80,13 @@ Returns JSON with `"type": "SUCCESS"` or `"type": "ERROR"`.
 New Session:
 
 ```bash
-executable/codex-kkp-cli --cd=/path/to/project "Explain the main function in Main.kt"
+executables/codex-kkp-cli-{platform} --cd=/path/to/project "Explain the main function in Main.kt"
 ```
 
 Continue Previous Session:
 
 ```bash
-executable/codex-kkp-cli --cd=/path/to/project --session=xxxxxxx "Explain the main function in Main.kt"
+executables/codex-kkp-cli-{platform} --cd=/path/to/project --session=xxxxxxx "Explain the main function in Main.kt"
 ```
 
 More examples: [examples.md](examples.md)
