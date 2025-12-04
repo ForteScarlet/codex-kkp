@@ -1,0 +1,232 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v**'
+
+# Ensure only one release workflow runs at a time
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  JAVA_VERSION: '21'
+  JAVA_DISTRIBUTION: 'temurin'
+  GRADLE_VERSION: '8.14'
+
+jobs:
+  # Run tests
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Run all tests
+        run: gradle allTests --no-daemon --stacktrace
+
+      - name: Upload test reports (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-reports-${{ matrix.os }}
+          path: |
+            **/build/reports/tests/
+            **/build/test-results/
+          retention-days: 7
+
+  # Build all platform binaries and package skill bundles
+  build:
+    name: Build and package all platforms
+#    needs: test
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Set up Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Build all platform binaries
+        run: gradle :codex-kkp-cli:linkReleaseExecutableMultiplatform --no-daemon --stacktrace
+
+      - name: Package all skill bundles
+        run: ./gradlew :codex-kkp-cli:packageAllSkills -Pversion=${{ steps.version.outputs.version }} --no-daemon --stacktrace
+
+      - name: List release artifacts
+        run: |
+          echo "Release artifacts prepared:"
+          ls -lh codex-kkp-cli/build/skillsReleases/
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: release-artifacts
+          path: codex-kkp-cli/build/skillsReleases/*
+          retention-days: 7
+
+      - name: Upload skill directories
+        uses: actions/upload-artifact@v5
+        with:
+          name: skill-directories
+          path: codex-kkp-cli/build/skills/
+          retention-days: 7
+
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+  # Commit to skills branch
+  commit-to-skills-branch:
+    name: Update skills branch
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Download skill directories
+        uses: actions/download-artifact@v6
+        with:
+          name: skill-directories
+          path: skill-temp/
+
+      - name: Deploy to skills branch
+        id: deploy
+#        uses: stefanzweifel/git-auto-commit-action@v7
+#        with:
+#          commit_message: 'Update Skills ${{ github.ref_name }}'
+#          branch: skills/release
+#          push_options: '--force'
+#          file_pattern: 'skill-temp/*'
+#          skip_fetch: true
+#          skip_checkout: true
+#          create_branch: true
+
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: skills/release
+          folder: skill-temp
+          clean: true
+          commit-message: "Release skills ${{ github.ref_name }}"
+          single-commit: false
+          force: true
+
+      - name: Get skills branch commit SHA
+        id: get_sha
+        run: |
+          git fetch origin skills/release
+          SKILLS_SHA=$(git rev-parse origin/skills/release)
+          echo "sha=$SKILLS_SHA" >> $GITHUB_OUTPUT
+          echo "Skills branch commit SHA: $SKILLS_SHA"
+
+    outputs:
+      skills_commit_sha: ${{ steps.get_sha.outputs.sha }}
+
+  # Create GitHub Release
+  create-release:
+    name: Create GitHub Release
+    needs: [build, commit-to-skills-branch]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Download release artifacts
+        uses: actions/download-artifact@v6
+        with:
+          name: release-artifacts
+          path: release-assets/
+
+      - name: List release assets
+        run: |
+          echo "Release assets:"
+          ls -lh release-assets/
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat > release_notes.md << 'EOF'
+          ## Codex Agent Collaboration v${{ needs.build.outputs.version }}
+
+          ### Installation
+
+          **Skills Branch Commit:** ${{ needs.commit-to-skills-branch.outputs.skills_commit_sha }}
+
+          Install the skill from the skills branch for platform-specific packages.
+
+          ### Usage
+
+          Extract the platform-specific package and follow the instructions in `SKILL.md`.
+
+          For standalone executables, make them executable on Unix systems:
+          ```bash
+          chmod +x codex-kkp-cli-<platform>.kexe
+          ./codex-kkp-cli-<platform>.kexe
+          ```
+          EOF
+
+          cat release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          body_path: release_notes.md
+          files: release-assets/*
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release summary
+        run: |
+          echo "✅ Release ${{ github.ref_name }} created successfully!"
+          echo ""
+          echo "📦 Release Assets:"
+          ls -lh release-assets/ | tail -n +2
+          echo ""
+          echo "🌿 Skills Branch: ${{ needs.commit-to-skills-branch.outputs.skills_commit_sha }}"
+          echo "🔗 Release URL: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
