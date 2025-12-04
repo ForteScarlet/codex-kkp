@@ -57,7 +57,7 @@ jobs:
   # Build all platform binaries and package skill bundles
   build:
     name: Build and package all platforms
-#    needs: test
+    needs: test
     runs-on: macos-latest
 
     steps:
@@ -89,6 +89,11 @@ jobs:
       - name: Package all skill bundles
         run: ./gradlew :codex-kkp-cli:packageAllSkills -Pversion=${{ steps.version.outputs.version }} --no-daemon --stacktrace
 
+      - name: List skills
+        run: |
+          echo "Release skills prepared:"
+          ls -lh codex-kkp-cli/build/skills/
+
       - name: List release artifacts
         run: |
           echo "Release artifacts prepared:"
@@ -106,6 +111,7 @@ jobs:
         with:
           name: skill-directories
           path: codex-kkp-cli/build/skills/
+          include-hidden-files: true
           retention-days: 7
 
     outputs:
