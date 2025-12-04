@@ -6,15 +6,16 @@
   },
   "metadata": {
     "description": "Marketplace for codex agent collaboration skills",
-    "version": "0.0.2"
+    "version": "0.0.3"
   },
   "plugins": [
     {
-      "name": "codex-agent-collaboration-skills",
+      "name": "codex-agent-collaboration",
       "description": "Execute tasks using Codex AI assistant for code analysis, implementation, and collaboration",
+      "version": "0.0.3",
       "source": "./",
       "strict": false,
-      "skills": ["codex-agent-collaboration-linuxarm64, codex-agent-collaboration-linuxx64, codex-agent-collaboration-macosarm64, codex-agent-collaboration-macosx64, codex-agent-collaboration-mingwx64"]
+      "skills": ["./codex-agent-collaboration"]
     }
   ]
 }

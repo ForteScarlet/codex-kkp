@@ -14,7 +14,7 @@ Choose the appropriate mode based on your task requirements.
 Codex can only read files in the workspace. No modifications are allowed.
 
 ```bash
-executable/codex-kkp-cli \
+executables/codex-kkp-cli-{platform} \
   --cd="/path/to/project" \
   --sandbox=read-only \
   "Analyze this codebase"
@@ -31,7 +31,7 @@ executable/codex-kkp-cli \
 Codex can read and write files within the workspace directory.
 
 ```bash
-executable/codex-kkp-cli \
+executables/codex-kkp-cli-{platform} \
   --cd="/path/to/project" \
   --sandbox=workspace-write \
   --full-auto \
@@ -49,7 +49,7 @@ executable/codex-kkp-cli \
 Full system access including network operations. **Use with caution.**
 
 ```bash
-executable/codex-kkp-cli \
+executables/codex-kkp-cli-{platform} \
   --cd="/path/to/project" \
   --sandbox=danger-full-access \
   "Install dependencies and run tests"
@@ -63,11 +63,11 @@ executable/codex-kkp-cli \
 
 ## Security Considerations
 
-| Mode | File Read | File Write | Network | System Commands |
-|------|-----------|------------|---------|-----------------|
-| `read-only` | Workspace only | No | No | No |
-| `workspace-write` | Workspace only | Workspace only | No | No |
-| `danger-full-access` | Full | Full | Yes | Yes |
+| Mode                 | File Read      | File Write     | Network | System Commands |
+|----------------------|----------------|----------------|---------|-----------------|
+| `read-only`          | Workspace only | No             | No      | No              |
+| `workspace-write`    | Workspace only | Workspace only | No      | No              |
+| `danger-full-access` | Full           | Full           | Yes     | Yes             |
 
 ## Recommendations
 

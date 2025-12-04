@@ -64,7 +64,7 @@ This produces significantly larger output and should only be used when you need 
 Save the last agent message to a specified file:
 
 ```bash
-executable/codex-kkp-cli \
+executables/codex-kkp-cli-{platform} \
   --cd="/path/to/project" \
   --output-last-message="/path/to/output/response.txt" \
   "Analyze this code"
@@ -75,7 +75,7 @@ executable/codex-kkp-cli \
 Specify a JSON schema file for structured output:
 
 ```bash
-executable/codex-kkp-cli \
+executables/codex-kkp-cli-{platform} \
   --cd="/path/to/project" \
   --output-schema="/path/to/schema.json" \
   "Extract function signatures"
