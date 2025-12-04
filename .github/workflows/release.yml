@@ -152,7 +152,7 @@ jobs:
           branch: skills/release
           folder: skill-temp
           clean: true
-          commit-message: "Release skills ${{ github.ref_name }}"
+          commit-message: "Release skills ${{ github.ref_name }} from ${{ github.sha }}"
           single-commit: false
           force: true
 

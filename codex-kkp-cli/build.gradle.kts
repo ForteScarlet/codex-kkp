@@ -12,15 +12,13 @@ kotlin {
     listOf(
         macosX64(),
         macosArm64(),
-        mingwX64 {
-            this.FRAMEWORK
-        },
+        mingwX64(),
         linuxX64(),
         linuxArm64(),
     ).forEach {
         it.binaries.executable {
-            optimized = true
-            binaryOption("smallBinary", "true")
+            // binaryOption("smallBinary", "true")
+            binaryOption("latin1Strings", "true")
         }
     }
 
@@ -250,10 +248,11 @@ private fun marketPlaceJson(version: String, skillDirList: List<String>): String
           "plugins": [
             {
               "name": "codex-agent-collaboration-skills",
-              "description": "Execute tasks using Codex AI assistant for code analysis, implementation, and collaboration",
+              "description": "Execute tasks using Codex AI Agent for code analysis, implementation, and collaboration",
+              "version": "$version"
               "source": "./",
               "strict": false,
-              "skills": [${skillDirList.joinToString(prefix = "\"", postfix = "\"", separator = ", ")}]
+              "skills": [${skillDirList.joinToString(separator = ",") { "\"./${it}\"" }}]
             }
           ]
         }
