@@ -121,7 +121,7 @@ class CodexCommandBuilderTest {
         val config = CodexExecConfig(workingDirectory = testDir, session = "abc-123")
         val command = CodexCommandBuilder.build("继续任务", config)
 
-        assertTrue(command.contains("--session abc-123"))
+        assertTrue(command.contains("resume abc-123"))
     }
 
     @Test
@@ -133,7 +133,7 @@ class CodexCommandBuilderTest {
         )
         val command = CodexCommandBuilder.build("继续修复", config)
 
-        assertTrue(command.contains("--session abc-123"))
+        assertTrue(command.contains("resume abc-123"))
         assertTrue(command.contains("--full-auto"))
     }
 
@@ -207,7 +207,7 @@ class CodexCommandBuilderTest {
         assertTrue(command.contains("--skip-git-repo-check"))
         assertTrue(command.contains("--image ./img1.png"))
         assertTrue(command.contains("--image ./img2.png"))
-        assertTrue(command.contains("--session session-123"))
+        assertTrue(command.contains("resume session-123"))
         assertTrue(command.endsWith("完整任务"))
     }
 

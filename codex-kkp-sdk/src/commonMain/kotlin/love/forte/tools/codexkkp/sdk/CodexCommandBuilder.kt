@@ -55,9 +55,9 @@ object CodexCommandBuilder {
                 add(escapeArg(image))
             }
 
-            // --session=<id>
+            // --session=<id> -> resume <id>
             config.session?.let {
-                add("--session")
+                add("resume")
                 add(escapeArg(it))
             }
 
