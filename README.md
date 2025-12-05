@@ -89,27 +89,45 @@ Note: All executables use uniform naming without file extensions (including Wind
 ### Tool installation and management
 
 Some open-source projects may allow independent management of marketplaces 
-and skills through repository addresses and branches (e.g., [cc-switch](https://github.com/farion1231/cc-switch)). 
+and skills through repository addresses and branches (e.g., [cc-switch](https://github.com/farion1231/cc-switch), skills only). 
 You can also configure skills directly based on repositories and branches using these tools.
 
 ## Configuration
 
-Once you've finished installing the skills, 
+Once you've finished installing the plugin, 
 you can proceed to configure some of your settings in advance.
 
 Edit the `.claude/settings.local.json` file in your project
 and add the following configuration to property `permissions.allow`:
+
+**Install skill only**
+
 ```json
 {
   "permissions": {
     "allow": [
-      "Skill(codex-agent-collaboration)",
+      "Skill(codex-agent-collaboration-plugin:codex-agent-collaboration)",
       "Bash(~/.claude/skills/codex-agent-collaboration/executables/codex-kkp-cli-macosx64:*)"
     ]
   }
 }
 ```
 
-In `Bash`, the path refers to the executable file within the installed skills package 
+**Install full plugin via marketplace**
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Skill(codex-agent-collaboration-plugin:codex-agent-collaboration)",
+      "Bash(~/.claude/marketplace/codex-kkp-skills-marketplace/codex-agent-collaboration-plugin/skills/codex-agent-collaboration/executables/codex-kkp-cli-macosx64:*)"
+    ]
+  }
+}
+```
+
+> If loading locally, then `~/.claude/marketplace/` should be replaced with the directory of your locally downloaded `codex-kkp-skills-marketplace`.
+
+In `Bash`, the path refers to the executable file within the installed plugin package 
 that corresponds to your system platform.
 You may need to make slight adjustments based on the actual situation.
