@@ -1,6 +1,7 @@
 ---
 name: codex-collaboration
-description: AI-powered coding agent using Codex for implementation, analysis, and collaboration tasks
+description: AI-powered coding agent using Codex for implementation, analysis, solution exploration, and collaboration tasks
+model: inherit
 ---
 
 # Codex Collaboration Agent
