@@ -185,6 +185,37 @@ tasks.register<Zip>("packageMarketplace") {
     }
 }
 
+// Generate backward-compatible marketplace.json for plugin-only structure
+val generateBackwardCompatibleMetadata = tasks.register<GenerateBackwardCompatibleMetadataTask>("generateBackwardCompatibleMetadata") {
+    group = "distribution"
+    description = "Generates backward-compatible marketplace.json for plugin-only structure"
+
+    dependsOn(prepareUnifiedSkill)
+
+    this.version.set(project.version.toString())
+    this.marketplaceJsonFile.set(layout.buildDirectory.file("plugins/.claude-plugin/marketplace.json"))
+}
+
+// Prepare standalone executables for release distribution
+val prepareStandaloneExecutables = tasks.register<PrepareStandaloneExecutablesTask>("prepareStandaloneExecutables") {
+    group = "distribution"
+    description = "Prepares standalone executables for release distribution"
+
+    this.executablesSourceDir.set(layout.buildDirectory.dir("bin"))
+
+    // Set platform mapping (target name -> platform name)
+    val platforms = kotlin.targets.withType<KotlinNativeTarget>().associate { target ->
+        target.name to target.name.lowercase()
+    }
+    this.platformMapping.set(platforms)
+
+    this.outputDir.set(pluginsReleasesDir)
+
+    // Depend on all platform link tasks
+    dependsOn(kotlin.targets.withType<KotlinNativeTarget>()
+        .mapNotNull { it.binaries.findExecutable(NativeBuildType.RELEASE)?.linkTaskProvider })
+}
+
 /**
  * Meta task to prepare the unified plugin bundle and marketplace (without ZIP).
  */
@@ -203,14 +234,21 @@ tasks.register("packageAllSkills") {
     group = "distribution"
     description = "Packages unified plugin bundle ZIP, marketplace ZIP, and standalone executables"
 
-    // Dynamically depend on the unified package task and marketplace package task
-    dependsOn("packageUnifiedSkill", "packageMarketplace")
+    // Depend on all packaging tasks
+    dependsOn(
+        "packageUnifiedSkill",
+        "packageMarketplace",
+        generateBackwardCompatibleMetadata,
+        prepareStandaloneExecutables
+    )
 
     doLast {
         val pluginsDirLayout = layout.buildDirectory.dir("plugins").get()
         val pluginsDir = pluginsDirLayout.asFile
         val pluginsReleasesDir = layout.buildDirectory.dir("pluginsReleases").get().asFile
+        val marketplaceDirFile = layout.buildDirectory.dir("marketplace").get().asFile
 
+        // Summary: Plugin bundle
         if (pluginsDir.exists()) {
             logger.lifecycle("✓ Unified plugin package created successfully!")
             logger.lifecycle("  Location: ${pluginsDir.absolutePath}")
@@ -219,74 +257,34 @@ tasks.register("packageAllSkills") {
             val executablesDir = pluginDir.resolve("executables")
             val executables = executablesDir.listFiles()?.filter { it.canExecute() } ?: emptyList()
             logger.lifecycle("  Platforms included: ${executables.size}")
-
-            for (file in executables) {
-                logger.lifecycle("    - ${file.name} (${file.length() / 1024} KB)")
-            }
-
-            // Generate marketplace.json for the unified plugin
-            val pluginMetadataDir = pluginsDirLayout.dir(".claude-plugin")
-            pluginMetadataDir.asFile.mkdirs()
-            val marketplaceJsonFile = pluginMetadataDir.file("marketplace.json").asFile
-            marketplaceJsonFile.writeText(marketPlaceJson(project.version.toString()))
         }
 
-        // Copy standalone executables to pluginsReleases directory
+        // Summary: Release artifacts
         if (pluginsReleasesDir.exists()) {
-            logger.lifecycle("\n✓ Preparing standalone executables for release...")
-            logger.lifecycle("  Location: ${pluginsReleasesDir.absolutePath}")
-
-            var copiedCount = 0
-            var skippedCount = 0
-
-            kotlin.targets.withType<KotlinNativeTarget> {
-                val releaseBinary = binaries.findExecutable(NativeBuildType.RELEASE)
-                if (releaseBinary != null) {
-                    val targetName = name // e.g., "macosX64"
-                    val platformName = targetName.lowercase() // e.g., "macosx64"
-                    val outputFile = releaseBinary.outputFile
-
-                    if (outputFile.exists()) {
-                        // Uniform naming: codex-kkp-cli-{platform} (no .exe extension)
-                        val targetFileName = "codex-kkp-cli-$platformName"
-                        val targetFile = File(pluginsReleasesDir, targetFileName)
-
-                        outputFile.copyTo(targetFile, overwrite = true)
-                        logger.lifecycle("    ✓ $targetFileName (${targetFile.length() / 1024} KB)")
-                        copiedCount++
-                    } else {
-                        logger.lifecycle("    ⊘ codex-kkp-cli-$platformName - not available on this host OS")
-                        skippedCount++
-                    }
-                }
-            }
+            val zipCount = pluginsReleasesDir.listFiles { f -> f.extension == "zip" }?.size ?: 0
+            val execCount = pluginsReleasesDir.listFiles { f -> f.canExecute() }?.size ?: 0
 
             logger.lifecycle("\n✓ Release artifacts summary:")
-            logger.lifecycle("  ZIP packages: ${pluginsReleasesDir.listFiles { f -> f.extension == "zip" }?.size ?: 0}")
+            logger.lifecycle("  Location: ${pluginsReleasesDir.absolutePath}")
+            logger.lifecycle("  ZIP packages: $zipCount")
             logger.lifecycle("    - codex-agent-collaboration.zip (plugin only)")
             logger.lifecycle("    - codex-agent-collaboration-marketplace.zip (complete marketplace)")
-            logger.lifecycle("  Executables: $copiedCount created" + if (skippedCount > 0) ", $skippedCount skipped" else "")
+            logger.lifecycle("  Executables: $execCount")
         }
 
-        // Log marketplace structure info
-        val marketplaceDirLayout = layout.buildDirectory.dir("marketplace").get()
-        val marketplaceDirFile = marketplaceDirLayout.asFile
-
+        // Summary: Marketplace structure
         if (marketplaceDirFile.exists()) {
             logger.lifecycle("\n✓ Marketplace package created successfully!")
             logger.lifecycle("  Location: ${marketplaceDirFile.absolutePath}")
 
             val pluginDir = marketplaceDirFile.listFiles()?.firstOrNull { it.isDirectory && it.name.endsWith("-plugin") }
             if (pluginDir != null) {
-                val pluginAgentsDir = pluginDir.resolve("agents")
-                val pluginSkillsDir = pluginDir.resolve("skills")
-
-                val agentCount = pluginAgentsDir.listFiles()?.count { it.extension == "md" } ?: 0
-                val skillCount = pluginSkillsDir.listFiles()?.count { it.isDirectory } ?: 0
+                val agentCount = pluginDir.resolve("agents").listFiles()?.count { it.extension == "md" } ?: 0
+                val skillCount = pluginDir.resolve("skills").listFiles()?.count { it.isDirectory } ?: 0
 
                 logger.lifecycle("  Structure:")
                 logger.lifecycle("    - .claude-plugin/marketplace.json")
-                logger.lifecycle("    - " + pluginDir.name + "/")
+                logger.lifecycle("    - ${pluginDir.name}/")
                 logger.lifecycle("      - .claude-plugin/plugin.json")
                 logger.lifecycle("      - agents/ ($agentCount agents)")
                 logger.lifecycle("      - skills/ ($skillCount skills)")

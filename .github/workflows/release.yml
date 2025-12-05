@@ -109,8 +109,8 @@ jobs:
       - name: Upload plugin directories
         uses: actions/upload-artifact@v5
         with:
-          name: plugin-directories
-          path: codex-kkp-cli/build/plugins/
+          name: marketplace-directories
+          path: codex-kkp-cli/build/marketplace/
           include-hidden-files: true
           retention-days: 7
 
@@ -132,8 +132,8 @@ jobs:
       - name: Download plugin directories
         uses: actions/download-artifact@v6
         with:
-          name: plugin-directories
-          path: plugin-temp/
+          name: marketplace-directories
+          path: marketplace-temp/
 
       - name: Deploy to plugins branch
         id: deploy
@@ -142,7 +142,7 @@ jobs:
 #          commit_message: 'Update Plugins ${{ github.ref_name }}'
 #          branch: plugins/release
 #          push_options: '--force'
-#          file_pattern: 'plugin-temp/*'
+#          file_pattern: 'marketplace-temp/*'
 #          skip_fetch: true
 #          skip_checkout: true
 #          create_branch: true
@@ -150,7 +150,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: plugins/release
-          folder: plugin-temp
+          folder: marketplace-temp
           clean: true
           commit-message: "Release plugins ${{ github.ref_name }} from ${{ github.sha }}"
           single-commit: false
