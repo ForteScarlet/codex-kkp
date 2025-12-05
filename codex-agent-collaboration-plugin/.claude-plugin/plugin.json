@@ -1,0 +1,12 @@
+{
+  "name": "codex-agent-collaboration-plugin",
+  "version": "0.0.5",
+  "description": "Execute tasks using Codex AI agent for code analysis, implementation, and collaboration",
+  "author": {
+    "name": "Forte Scarlet",
+    "email": "ForteScarlet@163.com"
+  },
+  "agents": [
+    "./agents/codex-collaboration.md"
+  ]
+}
