@@ -7,10 +7,10 @@ import org.gradle.api.tasks.*
 import javax.inject.Inject
 
 /**
- * Gradle task to prepare a unified multi-platform skill bundle for Claude Code.
+ * Gradle task to prepare a unified multi-platform plugin bundle for Claude Code.
  *
- * This task creates a single skill directory containing executables for all supported platforms,
- * rather than creating separate platform-specific skill directories. Claude Code will automatically
+ * This task creates a single plugin directory containing executables for all supported platforms,
+ * rather than creating separate platform-specific plugin directories. Claude Code will automatically
  * select the appropriate executable based on the runtime platform.
  *
  * This task follows Gradle best practices:
@@ -53,9 +53,9 @@ abstract class UnifiedSkillPackagingTask @Inject constructor(
     abstract val version: Property<String>
 
     /**
-     * Output directory for the unified skill bundle.
+     * Output directory for the unified plugin bundle.
      * This will contain all documentation and the executables/ subdirectory.
-     * Example: build/skills/codex-agent-collaboration/
+     * Example: build/plugins/codex-agent-collaboration/
      */
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
@@ -69,7 +69,7 @@ abstract class UnifiedSkillPackagingTask @Inject constructor(
 
     init {
         group = "distribution"
-        description = "Prepares unified multi-platform skill bundle for Claude Code"
+        description = "Prepares unified multi-platform plugin bundle for Claude Code"
     }
 
     @TaskAction
@@ -79,7 +79,7 @@ abstract class UnifiedSkillPackagingTask @Inject constructor(
         val binDir = executablesSourceDir.get().asFile
         val platforms = platformMapping.get()
 
-        logger.lifecycle("Preparing unified skill bundle for ${platforms.size} platforms")
+        logger.lifecycle("Preparing unified plugin bundle for ${platforms.size} platforms")
 
         // Sync documentation files from template using Gradle's sync operation
         // sync() ensures the destination matches the source exactly (removes stale files)
@@ -148,7 +148,7 @@ abstract class UnifiedSkillPackagingTask @Inject constructor(
             }
         }
 
-        logger.lifecycle("Unified skill bundle prepared: ${skillDir.absolutePath}")
+        logger.lifecycle("Unified plugin bundle prepared: ${skillDir.absolutePath}")
         logger.lifecycle("  Platforms included: $copiedCount" + if (skippedCount > 0) ", $skippedCount skipped" else "")
     }
 }

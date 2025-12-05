@@ -23,16 +23,16 @@ analysis, implementation, and collaboration tasks.
 
 **1.1 Download source**
 
-[Download](https://github.com/ForteScarlet/codex-kkp/archive/refs/heads/skills/release.zip) 
-the source code for Branch `skills/release` and extract it, 
+[Download](https://github.com/ForteScarlet/codex-kkp/archive/refs/heads/plugins/release.zip)
+the source code for Branch `plugins/release` and extract it, 
 
 **1.2 Clone source**
 
-**OR** clone the repository and 
-[check out Branch `skills/release`](https://github.com/ForteScarlet/codex-kkp/tree/skills/release) .
+**OR** clone the repository and
+[check out Branch `plugins/release`](https://github.com/ForteScarlet/codex-kkp/tree/plugins/release) .
 
 ```
-git clone -b skills/release https://github.com/ForteScarlet/codex-kkp.git
+git clone -b plugins/release https://github.com/ForteScarlet/codex-kkp.git
 ```
 
 **2. Add into Claude Code's marketplace**

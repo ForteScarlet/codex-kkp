@@ -54,7 +54,7 @@ jobs:
             **/build/test-results/
           retention-days: 7
 
-  # Build all platform binaries and package skill bundles
+  # Build all platform binaries and package plugin bundles
   build:
     name: Build and package all platforms
     needs: test
@@ -86,40 +86,40 @@ jobs:
       - name: Build all platform binaries
         run: gradle :codex-kkp-cli:linkReleaseExecutableMultiplatform --no-daemon --stacktrace
 
-      - name: Package all skill bundles
+      - name: Package all plugin bundles
         run: ./gradlew :codex-kkp-cli:packageAllSkills -Pversion=${{ steps.version.outputs.version }} --no-daemon --stacktrace
 
-      - name: List skills
+      - name: List plugins
         run: |
-          echo "Release skills prepared:"
-          ls -lh codex-kkp-cli/build/skills/
+          echo "Release plugins prepared:"
+          ls -lh codex-kkp-cli/build/plugins/
 
       - name: List release artifacts
         run: |
           echo "Release artifacts prepared:"
-          ls -lh codex-kkp-cli/build/skillsReleases/
+          ls -lh codex-kkp-cli/build/pluginsReleases/
 
       - name: Upload release artifacts
         uses: actions/upload-artifact@v5
         with:
           name: release-artifacts
-          path: codex-kkp-cli/build/skillsReleases/*
+          path: codex-kkp-cli/build/pluginsReleases/*
           retention-days: 7
 
-      - name: Upload skill directories
+      - name: Upload plugin directories
         uses: actions/upload-artifact@v5
         with:
-          name: skill-directories
-          path: codex-kkp-cli/build/skills/
+          name: plugin-directories
+          path: codex-kkp-cli/build/plugins/
           include-hidden-files: true
           retention-days: 7
 
     outputs:
       version: ${{ steps.version.outputs.version }}
 
-  # Commit to skills branch
-  commit-to-skills-branch:
-    name: Update skills branch
+  # Commit to plugins branch
+  commit-to-plugins-branch:
+    name: Update plugins branch
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -129,48 +129,48 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Download skill directories
+      - name: Download plugin directories
         uses: actions/download-artifact@v6
         with:
-          name: skill-directories
-          path: skill-temp/
+          name: plugin-directories
+          path: plugin-temp/
 
-      - name: Deploy to skills branch
+      - name: Deploy to plugins branch
         id: deploy
 #        uses: stefanzweifel/git-auto-commit-action@v7
 #        with:
-#          commit_message: 'Update Skills ${{ github.ref_name }}'
-#          branch: skills/release
+#          commit_message: 'Update Plugins ${{ github.ref_name }}'
+#          branch: plugins/release
 #          push_options: '--force'
-#          file_pattern: 'skill-temp/*'
+#          file_pattern: 'plugin-temp/*'
 #          skip_fetch: true
 #          skip_checkout: true
 #          create_branch: true
 
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: skills/release
-          folder: skill-temp
+          branch: plugins/release
+          folder: plugin-temp
           clean: true
-          commit-message: "Release skills ${{ github.ref_name }} from ${{ github.sha }}"
+          commit-message: "Release plugins ${{ github.ref_name }} from ${{ github.sha }}"
           single-commit: false
           force: true
 
-      - name: Get skills branch commit SHA
+      - name: Get plugins branch commit SHA
         id: get_sha
         run: |
-          git fetch origin skills/release
-          SKILLS_SHA=$(git rev-parse origin/skills/release)
-          echo "sha=$SKILLS_SHA" >> $GITHUB_OUTPUT
-          echo "Skills branch commit SHA: $SKILLS_SHA"
+          git fetch origin plugins/release
+          PLUGINS_SHA=$(git rev-parse origin/plugins/release)
+          echo "sha=$PLUGINS_SHA" >> $GITHUB_OUTPUT
+          echo "Plugins branch commit SHA: $PLUGINS_SHA"
 
     outputs:
-      skills_commit_sha: ${{ steps.get_sha.outputs.sha }}
+      plugins_commit_sha: ${{ steps.get_sha.outputs.sha }}
 
   # Create GitHub Release
   create-release:
     name: Create GitHub Release
-    needs: [build, commit-to-skills-branch]
+    needs: [build, commit-to-plugins-branch]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -198,9 +198,9 @@ jobs:
 
           ### Installation
 
-          **Skills Branch Commit:** ${{ needs.commit-to-skills-branch.outputs.skills_commit_sha }}
+          **Plugins Branch Commit:** ${{ needs.commit-to-plugins-branch.outputs.plugins_commit_sha }}
 
-          Install the skill from the skills branch for platform-specific packages.
+          Install the plugin from the plugins branch for platform-specific packages.
 
           ### Usage
 
@@ -234,5 +234,5 @@ jobs:
           echo "📦 Release Assets:"
           ls -lh release-assets/ | tail -n +2
           echo ""
-          echo "🌿 Skills Branch: ${{ needs.commit-to-skills-branch.outputs.skills_commit_sha }}"
+          echo "🌿 Plugins Branch: ${{ needs.commit-to-plugins-branch.outputs.plugins_commit_sha }}"
           echo "🔗 Release URL: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
