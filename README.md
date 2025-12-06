@@ -4,6 +4,8 @@
 
 ## Overview
 
+[中文](README_CN.md) | **English**
+
 Codex KKP is a Claude Code Plugin that enables seamless integration with Codex AI Agent for code
 analysis, implementation, and collaboration tasks. Provides a subagent and a skill for Codex AI Agent.
 

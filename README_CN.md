@@ -4,6 +4,8 @@
 
 ## 概述
 
+**中文** | [English](README.md)
+
 Codex KKP 是一个 Claude Code 插件，可与 Codex AI Agent 无缝集成，用于代码分析、实现和协作任务。
 提供 Codex AI Agent 的子代理(subagents)和技能(skills)。
 
