@@ -170,7 +170,7 @@ tasks.register<Zip>("packageMarketplace") {
     }
 
     // Enable inclusion of hidden files and directories
-    setIncludeEmptyDirs(true)
+    includeEmptyDirs = true
 
     archiveBaseName.set("codex-agent-collaboration-marketplace")
     archiveVersion.set("")

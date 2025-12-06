@@ -198,19 +198,11 @@ jobs:
 
           ### Installation
 
-          **Plugins Branch Commit:** ${{ needs.commit-to-plugins-branch.outputs.plugins_commit_sha }}
+          **${{ github.ref_name }} Marketplace Commit:** ${{ needs.commit-to-plugins-branch.outputs.plugins_commit_sha }}
+          
+          **Download the ${{ github.ref_name }} of the product**: [Download](https://github.com/ForteScarlet/codex-kkp/archive/${{ needs.commit-to-plugins-branch.outputs.plugins_commit_sha }}.zip)
+          or download [codex-agent-collaboration-marketplace.zip](https://github.com/ForteScarlet/codex-kkp/releases/download/${{ github.ref_name }}/codex-agent-collaboration-marketplace.zip) from release's assets.
 
-          Install the plugin from the plugins branch for platform-specific packages.
-
-          ### Usage
-
-          Extract the platform-specific package and follow the instructions in `SKILL.md`.
-
-          For standalone executables, make them executable on Unix systems:
-          ```bash
-          chmod +x codex-kkp-cli-<platform>.kexe
-          ./codex-kkp-cli-<platform>.kexe
-          ```
           EOF
 
           cat release_notes.md
@@ -224,6 +216,7 @@ jobs:
           draft: false
           prerelease: false
           fail_on_unmatched_files: true
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -2,8 +2,6 @@
 
 > KKP: **K**otlin Claude Code s**K**ill **P**lugin.
 
-[TOC]
-
 ## Overview
 
 Codex KKP is a Claude Code Plugin that enables seamless integration with Codex AI Agent for code
@@ -32,7 +30,7 @@ a subagent and a skill for code analysis, implementation, and collaboration task
 **1.1 Download source**
 
 [Download](https://github.com/ForteScarlet/codex-kkp/archive/refs/heads/plugins/release.zip)
-the source code for Branch `plugins/release` and extract it,
+the source code for Branch `plugins/release` and extract it.
 
 **1.2 Clone source**
 
@@ -72,7 +70,31 @@ and select a version (such as the [latest](https://github.com/ForteScarlet/codex
 
 Select the content you need from assets, download it, and configure it:
 
-#### 1. Download skills zip file
+#### 1. Download marketplace zip file
+
+The compressed file `codex-agent-collaboration-marketplace.zip` in Assets is a complete marketplace package that includes plugins and skills.
+
+After downloading and extracting, run Claude Code:
+
+```bash
+claude
+```
+
+Use the `/plugin` command:
+
+```bash
+/plugin
+```
+
+Choose `Add marketplace`:
+
+```bash
+> Add marketplace
+```
+
+Then enter the local path of your extracted marketplace directory (the directory containing the `.claude-plugin` directory).
+
+#### 2. Download skills zip file
 
 The compressed file `codex-agent-collaboration.zip` in Assets contains a unified multi-platform skill bundle.
 You can download and unzip it, then place the extracted directory in your skills directory
@@ -88,13 +110,13 @@ This single ZIP file includes executables for all supported platforms:
 
 Claude Code will automatically select the appropriate executable for your system.
 
-#### 2. Download executable binary file
+#### 3. Download executable binary file
 
 Standalone binary files (e.g., `codex-kkp-cli-macosx64`, `codex-kkp-cli-mingwx64`)
 in Assets are raw executable binaries for each platform.
 You can download only the executable file for your platform and design the skills yourself.
 
-Note: All executables use uniform naming without file extensions (including Windows builds).
+Note: All executables use uniform naming without file extensions (including Windows (`mingwx64`) builds).
 
 ### Tool installation and management
 
