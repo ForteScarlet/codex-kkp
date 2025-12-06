@@ -176,6 +176,8 @@ Claude Code 的配置目录中的 `plugins` 子目录中，例如：
 手动清理 `installed_plugins.json` 、 `known_marketplaces.json` 等配置文件中你已经卸载的 marketplace 和 plugins, 
 然后重新开启一个新的 CLI 。
 
+也因此，建议先卸载所有相关的 plugin，再去移除 marketplace。
+
 ## 许可证
 
 本项目采用 MIT 许可证 - 详情请参阅 [LICENSE](LICENSE) 文件。

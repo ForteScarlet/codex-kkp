@@ -180,6 +180,8 @@ this issue, you can go to the `plugins` subdirectory in Claude Code's configurat
 Manually clean up the configuration files like `installed_plugins.json` and `known_marketplaces.json` to remove the
 marketplaces and plugins you have already uninstalled, then restart a new CLI.
 
+For this reason, it is recommended to uninstall any plugins before removing marketplace.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
