@@ -2,6 +2,8 @@
 
 > KKP: **K**otlin Claude Code s**K**ill **P**lugin.
 
+[TOC]
+
 ## Overview
 
 Codex KKP is a Claude Code Plugin that enables seamless integration with Codex AI Agent for code
@@ -15,6 +17,11 @@ analysis, implementation, and collaboration tasks. Provides a subagent and a ski
 - **Session Management**: Resume previous sessions and maintain context
 - **Claude Code Subagents**: Run subagents in parallel to improve performance
 - **Sugar-Free, Calorie-Free**: Very healthy
+
+## Usage
+
+After installation and configuration, you can use the Codex KKP plugin within Claude Code. The plugin provides 
+a subagent and a skill for code analysis, implementation, and collaboration tasks.
 
 ## Installation
 
@@ -50,10 +57,10 @@ Use `/plugin`:
 /plugin
 ```
 
-Choose `Add aarketplace`:
+Choose `Add marketplace`:
 
 ```
-> Add aarketplace
+> Add marketplace
 ```
 
 and enter the local path where you downloaded/cloned the repository.
@@ -136,3 +143,7 @@ and add the following configuration to property `permissions.allow`:
 In `Bash`, the path refers to the executable file within the installed plugin package
 that corresponds to your system platform.
 You may need to make slight adjustments based on the actual situation.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

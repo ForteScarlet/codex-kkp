@@ -30,6 +30,10 @@ fun pluginJson(
           "name": "$name",
           "version": "$version",
           "description": "$description",
+          "license": "MIT",
+          "homepage": "https://github.com/ForteScarlet/codex-kkp",
+          "repository": "https://github.com/ForteScarlet/codex-kkp",
+          "keywords": ["AI", "agent", "codex", "assistant"],
           "author": {
             "name": "$authorName",
             "email": "$authorEmail"
