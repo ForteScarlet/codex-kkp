@@ -4,8 +4,8 @@
 
 ## Overview
 
-Codex KKP is a Kotlin-based Claude Code Skills Plugin that enables seamless integration with Codex AI Agent for code
-analysis, implementation, and collaboration tasks.
+Codex KKP is a Claude Code Plugin that enables seamless integration with Codex AI Agent for code
+analysis, implementation, and collaboration tasks. Provides a subagent and a skill for Codex AI Agent.
 
 ## Features
 
@@ -13,6 +13,7 @@ analysis, implementation, and collaboration tasks.
 - **Streamlined results**: By default, only completed results are returned to reduce token consumption.
 - **Sandbox Modes**: Configurable security levels (read-only, workspace-write, danger-full-access)
 - **Session Management**: Resume previous sessions and maintain context
+- **Claude Code Subagents**: Run subagents in parallel to improve performance
 - **Sugar-Free, Calorie-Free**: Very healthy
 
 ## Installation
@@ -24,7 +25,7 @@ analysis, implementation, and collaboration tasks.
 **1.1 Download source**
 
 [Download](https://github.com/ForteScarlet/codex-kkp/archive/refs/heads/plugins/release.zip)
-the source code for Branch `plugins/release` and extract it, 
+the source code for Branch `plugins/release` and extract it,
 
 **1.2 Clone source**
 
@@ -44,6 +45,7 @@ claude
 ```
 
 Use `/plugin`:
+
 ```
 /plugin
 ```
@@ -70,6 +72,7 @@ You can download and unzip it, then place the extracted directory in your skills
 (e.g., `<PROJECT_DIR>/.claude/skills/codex-agent-collaboration/`).
 
 This single ZIP file includes executables for all supported platforms:
+
 - macOS x86_64 (Intel) - `executables/codex-kkp-cli-macosx64`
 - macOS ARM64 (Apple Silicon) - `executables/codex-kkp-cli-macosarm64`
 - Linux x86_64 - `executables/codex-kkp-cli-linuxx64`
@@ -88,13 +91,14 @@ Note: All executables use uniform naming without file extensions (including Wind
 
 ### Tool installation and management
 
-Some open-source projects may allow independent management of marketplaces 
-and skills through repository addresses and branches (e.g., [cc-switch](https://github.com/farion1231/cc-switch), skills only). 
+Some open-source projects may allow independent management of marketplaces
+and skills through repository addresses and branches (e.g., [cc-switch](https://github.com/farion1231/cc-switch), skills
+only).
 You can also configure skills directly based on repositories and branches using these tools.
 
 ## Configuration
 
-Once you've finished installing the plugin, 
+Once you've finished installing the plugin,
 you can proceed to configure some of your settings in advance.
 
 Edit the `.claude/settings.local.json` file in your project
@@ -126,8 +130,9 @@ and add the following configuration to property `permissions.allow`:
 }
 ```
 
-> If loading locally, then `~/.claude/marketplace/` should be replaced with the directory of your locally downloaded `codex-kkp-skills-marketplace`.
+> If loading locally, then `~/.claude/marketplace/` should be replaced with the directory of your locally downloaded
+`codex-kkp-skills-marketplace`.
 
-In `Bash`, the path refers to the executable file within the installed plugin package 
+In `Bash`, the path refers to the executable file within the installed plugin package
 that corresponds to your system platform.
 You may need to make slight adjustments based on the actual situation.
