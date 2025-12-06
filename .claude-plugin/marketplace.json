@@ -1,6 +1,6 @@
 {
   "name": "codex-agent-collaboration-marketplace",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "owner": {
     "name": "Forte Scarlet",
     "email": "ForteScarlet@163.com"
@@ -9,7 +9,7 @@
     {
       "name": "codex-agent-collaboration-plugin",
       "description": "Execute tasks using Codex AI agent for code analysis, implementation, and collaboration",
-      "version": "0.0.5",
+      "version": "0.0.6",
       "source": "./codex-agent-collaboration-plugin",
       "strict": true
     }

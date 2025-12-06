@@ -1,7 +1,11 @@
 {
   "name": "codex-agent-collaboration-plugin",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Execute tasks using Codex AI agent for code analysis, implementation, and collaboration",
+  "license": "MIT",
+  "homepage": "https://github.com/ForteScarlet/codex-kkp",
+  "repository": "https://github.com/ForteScarlet/codex-kkp",
+  "keywords": ["AI", "agent", "codex", "assistant"],
   "author": {
     "name": "Forte Scarlet",
     "email": "ForteScarlet@163.com"
