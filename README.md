@@ -166,6 +166,20 @@ In `Bash`, the path refers to the executable file within the installed plugin pa
 that corresponds to your system platform.
 You may need to make slight adjustments based on the actual situation.
 
+## Uninstall
+
+Sometimes, when you try to update or uninstall a marketplace, due to issues with the Claude Code CLI itself, the plugin
+may not be completely uninstalled. This can lead to problems such as being unable to completely clear the plugin's
+activation, or being unable to enable/re-enable plugins when reloading/reinstalling the marketplace. If you encounter
+this issue, you can go to the `plugins` subdirectory in Claude Code's configuration directory, for example:
+
+```
+~/.claude/plugins
+```
+
+Manually clean up the configuration files like `installed_plugins.json` and `known_marketplaces.json` to remove the
+marketplaces and plugins you have already uninstalled, then restart a new CLI.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -11,7 +11,6 @@ import org.intellij.lang.annotations.Language
  * @param description Plugin description
  * @param authorName Author's display name
  * @param authorEmail Author's email address
- * @param agents List of agent file paths relative to plugin root (e.g., "./agents/codex-collaboration.md")
  * @return JSON string for plugin.json
  */
 @Language("JSON")
@@ -21,10 +20,7 @@ fun pluginJson(
     description: String,
     authorName: String,
     authorEmail: String,
-    agents: List<String>
 ): String {
-    val agentsJson = agents.joinToString(", ") { "\"$it\"" }
-
     return """
         {
           "name": "$name",
@@ -37,10 +33,7 @@ fun pluginJson(
           "author": {
             "name": "$authorName",
             "email": "$authorEmail"
-          },
-          "agents": [
-            $agentsJson
-          ]
+          }
         }
     """.trimIndent()
 }

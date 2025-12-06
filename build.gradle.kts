@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "love.forte.tools"
-version = "0.0.6"
+version = "0.0.7"
 
 allprojects {
     repositories {

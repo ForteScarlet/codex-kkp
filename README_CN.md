@@ -163,6 +163,19 @@ Assets 中的独立二进制文件（例如 `codex-kkp-cli-macosx64`、`codex-kk
 在 `Bash` 中，路径指的是已安装插件包内对应您系统平台的可执行文件。
 您可能需要根据实际情况进行适当调整。
 
+## 卸载
+
+有些时候，当你尝试更新 marketplace、卸载 marketplace 的时候，由于 Claude Code CLI 本身的问题，可能会导致 plugin 卸载不完全，
+进一步导致无法彻底清除 plugin 的启用、重新加载/安装 marketplace 无法启用/重新启用插件等问题。如果遇到此问题，你可以前往
+Claude Code 的配置目录中的 `plugins` 子目录中，例如：
+
+```
+~/.claude/plugins
+```
+
+手动清理 `installed_plugins.json` 、 `known_marketplaces.json` 等配置文件中你已经卸载的 marketplace 和 plugins, 
+然后重新开启一个新的 CLI 。
+
 ## 许可证
 
 本项目采用 MIT 许可证 - 详情请参阅 [LICENSE](LICENSE) 文件。

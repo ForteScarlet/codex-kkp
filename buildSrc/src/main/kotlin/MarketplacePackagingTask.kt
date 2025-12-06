@@ -175,8 +175,7 @@ abstract class MarketplacePackagingTask @Inject constructor(
                 version = versionStr,
                 description = pluginDescStr,
                 authorName = authorName.get(),
-                authorEmail = authorEmail.get(),
-                agents = agentPaths.get()
+                authorEmail = authorEmail.get()
             )
         )
         logger.lifecycle("  ✓ Generated plugin.json")

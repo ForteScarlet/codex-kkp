@@ -63,7 +63,10 @@ fun marketplaceJsonForRoot(
     return """
         {
           "name": "$name",
-          "version": "$version",
+          "metadata": {
+            "description": "Marketplace for codex agent collaboration plugins",
+            "version": "$version"
+          }
           "owner": {
             "name": "$ownerName",
             "email": "$ownerEmail"
@@ -71,10 +74,7 @@ fun marketplaceJsonForRoot(
           "plugins": [
             {
               "name": "$pluginName",
-              "description": "$pluginDescription",
-              "version": "$pluginVersion",
-              "source": "$pluginSource",
-              "strict": true
+              "source": "$pluginSource"
             }
           ]
         }
