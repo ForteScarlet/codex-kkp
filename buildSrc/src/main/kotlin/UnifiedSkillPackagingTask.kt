@@ -17,7 +17,7 @@ import javax.inject.Inject
  * - Uses [FileSystemOperations] for file operations (injected service)
  * - Supports incremental builds via proper input/output annotations
  * - Supports build cache via [@CacheableTask] and [@PathSensitive]
- * - Uses Gradle's [filePermissions] API for setting executable permissions
+ * - Uses Gradle's filePermissions API for setting executable permissions
  *
  * ZIP creation is handled separately by a standard [org.gradle.api.tasks.bundling.Zip] task
  * for better separation of concerns and native Gradle support.
@@ -85,7 +85,7 @@ abstract class UnifiedSkillPackagingTask @Inject constructor(
         // sync() ensures the destination matches the source exactly (removes stale files)
         fsOps.sync {
             from(templateDirectory) {
-                include("SKILL.md", "examples.md", "outputs.md", "sandbox-modes.md")
+                include("SKILL.md", "examples.md", "outputs.md", "sandbox-modes.md", "codex-kkp-cli-platform")
             }
             into(skillDir)
         }
@@ -148,7 +148,46 @@ abstract class UnifiedSkillPackagingTask @Inject constructor(
             }
         }
 
+        // Copy wrapper scripts from template directory to executables directory
+        logger.info("Copying wrapper scripts from template")
+        val wrapperScripts = listOf("codex-kkp-cli", "codex-kkp-cli.bat", "codex-kkp-cli.ps1")
+        var wrapperCount = 0
+
+        wrapperScripts.forEach { wrapperName ->
+            val sourceWrapper = templateDirectory.resolve(wrapperName)
+            if (sourceWrapper.exists()) {
+                fsOps.copy {
+                    from(sourceWrapper)
+                    into(executablesDir)
+
+                    // Preserve executable permissions for bash script
+                    if (wrapperName == "codex-kkp-cli") {
+                        filePermissions {
+                            user {
+                                read = true
+                                write = true
+                                execute = true
+                            }
+                            group {
+                                read = true
+                                execute = true
+                            }
+                            other {
+                                read = true
+                                execute = true
+                            }
+                        }
+                    }
+                }
+                logger.lifecycle("  ✓ $wrapperName (wrapper script)")
+                wrapperCount++
+            } else {
+                logger.warn("  ⊘ $wrapperName - not found in template")
+            }
+        }
+
         logger.lifecycle("Unified plugin bundle prepared: ${skillDir.absolutePath}")
         logger.lifecycle("  Platforms included: $copiedCount" + if (skippedCount > 0) ", $skippedCount skipped" else "")
+        logger.lifecycle("  Wrapper scripts: $wrapperCount")
     }
 }
