@@ -18,9 +18,30 @@ Codex KKP 是一个 Claude Code 插件，可与 Codex AI Agent 无缝集成，�
 - **子代理**：并行运行子代理以提高性能
 - **零糖零卡**：非常健康
 
-## 使用方法
+## 使用
 
-安装和配置完成后，您可以在 Claude Code 中使用 Codex KKP 插件。
+你可以通过 `/agents` 或通过提示词询问 `“你有哪些 Skills？”` 来验证安装的成功与否。
+当成功安装和配置后，您可以在 Claude Code 中使用 Codex KKP 插件。
+通过提示词来暗示 Claude Code 使用 Codex 的 subagents 或 skills，例如：
+
+```
+积极深度配合 codex 、subagent 进行任务协同、代码审查，确保代码质量，并发进行任务
+```
+
+```
+使用 Codex 审查代码变更
+```
+
+Claude Code 会根据提示词自行决定对 Skills 或 agents 的使用。
+
+### 文件操作
+
+codex-kkp 默认要求 codex 使用 `sandbox=read-only` 的模式进行。如果需要让 codex 可以直接修改文件，
+那么 Claude Code 在调用 codex-kkp 的时候要指定正确的 `sandbox=workspace-write` 模式或添加 `--full-auto` 参数（较为危险）。
+
+在 skills 渐进式文档中对这些有提及，但是假如 Claude Code 仍然无法自行理解，那么你可以在提示词中体现这些。
+
+codex 会返回对文件的操作内容，前提是它使用的是 `apply_patch` 之类的工具 API 而不是一些 Bash/Command 操作。
 
 ## 安装
 

@@ -20,8 +20,30 @@ analysis, implementation, and collaboration tasks. Provides a subagent and a ski
 
 ## Usage
 
-After installation and configuration, you can use the Codex KKP plugin within Claude Code. The plugin provides 
+After installation and configuration, you can use the Codex KKP plugin within Claude Code. The plugin provides
 a subagent and a skill for code analysis, implementation, and collaboration tasks.
+
+You can verify successful installation by using `/agents` or by asking "What skills do you have?".
+Once successfully installed, you can prompt Claude Code to use Codex subagents or skills through prompts, for example:
+
+```
+Actively collaborate deeply with codex and subagents for task coordination and code review, ensure code quality, and perform tasks concurrently
+```
+
+```
+Use Codex to review code changes
+```
+
+Claude Code will decide on its own whether to use Skills or agents based on the prompts.
+
+### File Operations
+
+codex-kkp requires codex to use `sandbox=read-only` mode by default. If you need codex to directly modify files,
+Claude Code must specify the correct `sandbox=workspace-write` mode or add the `--full-auto` parameter (more dangerous) when calling codex-kkp.
+
+This is mentioned in the skills progressive documentation, but if Claude Code still cannot understand it on its own, you can include these details in your prompts.
+
+Codex will return file operation content, provided it uses tool APIs like `apply_patch` rather than some Bash/Command operations.
 
 ## Installation
 
