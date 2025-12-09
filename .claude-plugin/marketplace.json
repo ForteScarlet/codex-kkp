@@ -2,7 +2,7 @@
   "name": "codex-agent-collaboration-marketplace",
   "metadata": {
     "description": "Marketplace for codex agent collaboration plugins",
-    "version": "0.0.8"
+    "version": "0.0.9"
   },
   "owner": {
     "name": "Forte Scarlet",

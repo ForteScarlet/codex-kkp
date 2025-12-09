@@ -2,6 +2,20 @@
 
 This document provides examples of using the Codex CLI for various tasks.
 
+**Note:** All examples use platform-specific executables (e.g., `codex-kkp-cli-macosx64`). You can auto-detect your platform using the detection scripts:
+
+```bash
+# Unix/Linux/macOS
+PLATFORM=$(./executables/codex-kkp-cli)
+# Then use: executables/codex-kkp-cli-${PLATFORM}
+
+# Windows (PowerShell)
+$platform = .\executables\codex-kkp-cli.ps1
+# Then use: executables\codex-kkp-cli-$platform
+```
+
+For brevity, examples below use `codex-kkp-cli-{platform}` as a placeholder. Replace with your actual platform executable.
+
 ## Basic Examples
 
 ### Simple Task
@@ -27,31 +41,31 @@ executables/codex-kkp-cli-{platform} --cd=/path/to/project --full-auto --sandbox
 ### With Image Input
 
 ```bash
-executables/codex-kkp-cli-{platform} --cd=/path/to/project --image=/path/to/screenshot.png "Implement the UI shown in this design"
+executables/codex-kkp-cli --cd=/path/to/project --image=/path/to/screenshot.png "Implement the UI shown in this design"
 ```
 
 ### Multiple Images
 
 ```bash
-executables/codex-kkp-cli-{platform} --cd=/path/to/project --image=/path/to/design1.png --image=/path/to/design2.png "Compare these two designs and implement the better approach"
+executables/codex-kkp-cli --cd=/path/to/project --image=/path/to/design1.png --image=/path/to/design2.png "Compare these two designs and implement the better approach"
 ```
 
 ### Full Event Output
 
 ```bash
-executables/codex-kkp-cli-{platform} --cd=/path/to/project --full "Refactor the authentication module"
+executables/codex-kkp-cli --cd=/path/to/project --full "Refactor the authentication module"
 ```
 
 ### Save Last Message to File
 
 ```bash
-executables/codex-kkp-cli-{platform} --cd=/path/to/project --output-last-message=/tmp/codex-response.txt "Generate API documentation"
+executables/codex-kkp-cli --cd=/path/to/project --output-last-message=/tmp/codex-response.txt "Generate API documentation"
 ```
 
 ### Structured Output with Schema
 
 ```bash
-executables/codex-kkp-cli-{platform} --cd=/path/to/project --output-schema=/path/to/schema.json "Extract all function signatures from this module"
+executables/codex-kkp-cli --cd=/path/to/project --output-schema=/path/to/schema.json "Extract all function signatures from this module"
 ```
 
 ### With Git Repository Check
@@ -60,5 +74,5 @@ By default, Git repository check is skipped (`--skip-git-repo-check=true`).
 To enable Git check (e.g., for ensuring clean working directory):
 
 ```bash
-executables/codex-kkp-cli-{platform} --cd=/path/to/project --skip-git-repo-check=false "Analyze uncommitted changes"
+executables/codex-kkp-cli --cd=/path/to/project --skip-git-repo-check=false "Analyze uncommitted changes"
 ```

@@ -21,15 +21,31 @@ The `codex-kkp-cli` is a Codex Agent CLI tool, allowing you to:
 ### Basic Syntax
 
 ```bash
+# Direct call with platform-specific executable
 executables/codex-kkp-cli-{platform} --cd=/absolute/path/to/project [options] "<task_description>"
 ```
 
-**Platform Variable**: `{platform}` should be automatically replaced based on the current system:
-- `macosx64` - macOS x86_64 (Intel)
-- `macosarm64` - macOS ARM64 (Apple Silicon)
+Where `{platform}` is one of:
+- `macosx64` - macOS Intel (x86_64)
+- `macosarm64` - macOS Apple Silicon (ARM64)
 - `linuxx64` - Linux x86_64
 - `linuxarm64` - Linux ARM64
 - `mingwx64` - Windows x86_64
+
+**Platform Auto-Detection Helper**: A platform detection script is provided to help identify your current platform:
+
+> On Windows, Just use mingwx64 platform directly, no need to use script detection.
+
+```bash
+# Unix/Linux/macOS
+codex-kkp-cli-platform
+# Outputs: macosx64, macosarm64, linuxx64, or linuxarm64
+```
+
+### communication
+
+This is AI-to-AI communication between You and Codex. PRIORITIZE ACCURACY AND PRECISION over human readability.
+Use structured data, exact technical terms, full paths, and precise details. NO conversational formatting needed.
 
 ### Required Parameters
 
