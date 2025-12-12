@@ -142,13 +142,6 @@ You can download only the executable file for your platform and design the skill
 
 Note: All executables use uniform naming without file extensions (including Windows (`mingwx64`) builds).
 
-### Tool installation and management
-
-Some open-source projects may allow independent management of marketplaces
-and skills through repository addresses and branches (e.g., [cc-switch](https://github.com/farion1231/cc-switch), skills
-only).
-You can also configure skills directly based on repositories and branches using these tools.
-
 ## Configuration
 
 Once you've finished installing the plugin,

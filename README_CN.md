@@ -140,12 +140,6 @@ Assets 中的独立二进制文件（例如 `codex-kkp-cli-macosx64`、`codex-kk
 
 注意：所有可执行文件使用统一的命名方式，因此不带文件扩展名（包括 Windows (`mingwx64`) 平台）。
 
-### 工具安装和管理
-
-一些开源项目可能允许通过仓库地址和分支独立管理 marketplace
-和技能（例如 [cc-switch](https://github.com/farion1231/cc-switch)，不过它仅限技能）。
-您也可以使用这些工具直接基于仓库和分支配置技能。
-
 ## 配置
 
 完成插件安装后，
