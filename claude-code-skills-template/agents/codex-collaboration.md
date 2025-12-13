@@ -2,12 +2,13 @@
 name: codex-collaboration
 description: AI-powered coding agent using Codex for implementation, analysis, solution exploration, and collaboration tasks
 model: inherit
+skills: codex-agent-collaboration
 ---
 
 # Codex Collaboration Agent
 
-This agent provides access to Codex AI capabilities for complex coding tasks that benefit from an alternative
-perspective or specialized analysis.
+This agent provides access to Codex AI capabilities through Codex SKILLS for complex coding tasks that benefit from an
+alternative perspective or specialized analysis.
 
 ## Capabilities
 
