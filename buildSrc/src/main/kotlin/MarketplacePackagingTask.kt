@@ -12,6 +12,7 @@ import javax.inject.Inject
  * This task creates a marketplace directory that contains multiple plugins, where each plugin
  * has its own metadata, agents, and skills. The structure follows Claude Code conventions:
  *
+ * ```
  * marketplace-root/
  *   ├── .claude-plugin/
  *   │   └── marketplace.json          (marketplace metadata)
@@ -24,6 +25,7 @@ import javax.inject.Inject
  *           └── skill-name/             (skill bundles)
  *               ├── SKILL.md
  *               └── executables/
+ *```
  *
  * This task follows Gradle best practices:
  * - Uses [FileSystemOperations] for file operations (injected service)
@@ -93,6 +95,18 @@ abstract class MarketplacePackagingTask @Inject constructor(
     abstract val pluginDescription: Property<String>
 
     /**
+     * Marketplace description (for the marketplace.json top-level field)
+     */
+    @get:Input
+    abstract val marketplaceDescription: Property<String>
+
+    /**
+     * Plugin category (e.g., "development", "productivity", "security")
+     */
+    @get:Input
+    abstract val pluginCategory: Property<String>
+
+    /**
      * Author name for plugin
      */
     @get:Input
@@ -148,12 +162,14 @@ abstract class MarketplacePackagingTask @Inject constructor(
             marketplaceJsonForRoot(
                 name = marketplaceNameStr,
                 version = versionStr,
+                description = marketplaceDescription.get(),
                 ownerName = ownerName.get(),
                 ownerEmail = ownerEmail.get(),
                 pluginName = pluginNameStr,
                 pluginDescription = pluginDescStr,
                 pluginVersion = versionStr,
-                pluginSource = "./$pluginNameStr"
+                pluginSource = "./$pluginNameStr",
+                pluginCategory = pluginCategory.get()
             )
         )
         logger.lifecycle("  ✓ Generated marketplace.json at root")

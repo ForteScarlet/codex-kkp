@@ -141,12 +141,14 @@ val prepareMarketplace = tasks.register<MarketplacePackagingTask>("prepareMarket
     // Marketplace metadata
     this.marketplaceName.set("codex-agent-collaboration-marketplace")
     this.version.set(project.version.toString())
+    this.marketplaceDescription.set("Marketplace for Codex AI agent collaboration plugins - execute tasks using Codex for code analysis, implementation, and collaboration")
     this.ownerName.set("Forte Scarlet")
     this.ownerEmail.set("ForteScarlet@163.com")
 
     // Plugin metadata
-    this.pluginName.set("codex-agent-collaboration-plugin")
+    this.pluginName.set("codex-agent-collaboration-skills")
     this.pluginDescription.set("Execute tasks using Codex AI agent for code analysis, implementation, and collaboration")
+    this.pluginCategory.set("development")
     this.authorName.set("Forte Scarlet")
     this.authorEmail.set("ForteScarlet@163.com")
 
