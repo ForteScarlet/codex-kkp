@@ -1,17 +1,23 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "codex-agent-collaboration-marketplace",
-  "metadata": {
-    "description": "Marketplace for codex agent collaboration plugins",
-    "version": "0.0.10"
-  },
+  "version": "0.0.11",
+  "description": "Marketplace for Codex AI agent collaboration plugins - execute tasks using Codex for code analysis, implementation, and collaboration",
   "owner": {
     "name": "Forte Scarlet",
     "email": "ForteScarlet@163.com"
   },
   "plugins": [
     {
-      "name": "codex-agent-collaboration-plugin",
-      "source": "./codex-agent-collaboration-plugin"
+      "name": "codex-agent-collaboration-skills",
+      "description": "Execute tasks using Codex AI agent for code analysis, implementation, and collaboration",
+      "version": "0.0.11",
+      "author": {
+        "name": "Forte Scarlet",
+        "email": "ForteScarlet@163.com"
+      },
+      "source": "./codex-agent-collaboration-skills",
+      "category": "development"
     }
   ]
 }
