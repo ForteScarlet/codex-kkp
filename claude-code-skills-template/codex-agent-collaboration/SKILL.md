@@ -1,6 +1,6 @@
 ---
 name: codex-agent-collaboration
-description: Execute tasks using Codex AI agent for code analysis, implementation, and collaboration
+description: Delegate coding tasks to Codex AI for implementation, analysis, and alternative solutions. Use when you need a second AI perspective, want to explore different approaches, or need specialized Codex capabilities for complex coding tasks.
 ---
 
 # Codex CLI Skill

@@ -141,13 +141,13 @@ val prepareMarketplace = tasks.register<MarketplacePackagingTask>("prepareMarket
     // Marketplace metadata
     this.marketplaceName.set("codex-agent-collaboration-marketplace")
     this.version.set(project.version.toString())
-    this.marketplaceDescription.set("Marketplace for Codex AI agent collaboration plugins - execute tasks using Codex for code analysis, implementation, and collaboration")
+    this.marketplaceDescription.set("Marketplace for Codex AI agent collaboration - delegate coding tasks to Codex for implementation, analysis, and alternative solutions")
     this.ownerName.set("Forte Scarlet")
     this.ownerEmail.set("ForteScarlet@163.com")
 
     // Plugin metadata
-    this.pluginName.set("codex-agent-collaboration-skills")
-    this.pluginDescription.set("Execute tasks using Codex AI agent for code analysis, implementation, and collaboration")
+    this.pluginName.set("codex-agent-collaboration-plugin")
+    this.pluginDescription.set("Delegate coding tasks to Codex AI for implementation, analysis, and alternative solutions")
     this.pluginCategory.set("development")
     this.authorName.set("Forte Scarlet")
     this.authorEmail.set("ForteScarlet@163.com")
@@ -190,12 +190,12 @@ tasks.register<Zip>("packageMarketplace") {
 // Generate backward-compatible marketplace.json for plugin-only structure
 val generateBackwardCompatibleMetadata = tasks.register<GenerateBackwardCompatibleMetadataTask>("generateBackwardCompatibleMetadata") {
     group = "distribution"
-    description = "Generates backward-compatible marketplace.json for plugin-only structure"
+    description = "Generates backward-compatible plugin.json for plugin-only structure"
 
     dependsOn(prepareUnifiedSkill)
 
     this.version.set(project.version.toString())
-    this.marketplaceJsonFile.set(layout.buildDirectory.file("plugins/.claude-plugin/marketplace.json"))
+    this.marketplaceJsonFile.set(layout.buildDirectory.file("plugins/.claude-plugin/plugin.json"))
 }
 
 // Prepare standalone executables for release distribution

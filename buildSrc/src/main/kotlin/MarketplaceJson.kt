@@ -12,10 +12,11 @@ import org.intellij.lang.annotations.Language
 fun marketPlaceJson(version: String): String {
     return """
         {
-          "${"$"}schema": "https://anthropic.com/claude-code/marketplace.schema.json",
           "name": "codex-agent-collaboration-marketplace",
-          "version": "$version",
-          "description": "Marketplace for Codex AI agent collaboration skills - execute tasks using Codex for code analysis, implementation, and collaboration",
+          "metadata": {
+            "description": "Marketplace for Codex AI agent collaboration skills - execute tasks using Codex for code analysis, implementation, and collaboration",
+            "version": "$version"
+          },
           "owner": {
             "name": "Forte Scarlet",
             "email": "ForteScarlet@163.com"
@@ -78,7 +79,10 @@ fun marketplaceJsonForRoot(
           "${"$"}schema": "https://anthropic.com/claude-code/marketplace.schema.json",
           "name": "$name",
           "version": "$version",
-          "description": "$description",
+          "metadata": {
+            "description": "$description",
+            "version": "$version"
+          },
           "owner": {
             "name": "$ownerName",
             "email": "$ownerEmail"

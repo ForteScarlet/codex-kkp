@@ -5,10 +5,14 @@ plugins {
 }
 
 group = "love.forte.tools"
-version = "0.0.11"
+version = "0.0.12"
 
 allprojects {
     repositories {
         mavenCentral()
     }
+}
+
+subprojects {
+    version = rootProject.version
 }
