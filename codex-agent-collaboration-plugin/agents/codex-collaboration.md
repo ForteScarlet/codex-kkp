@@ -1,8 +1,9 @@
 ---
 name: codex-collaboration
-description: AI-powered coding agent using Codex for implementation, analysis, solution exploration, and collaboration tasks
+description: Delegate to Codex AI when you need alternative implementation approaches, code analysis from a different perspective, or want to explore multiple solutions. Best for complex coding tasks that benefit from a second AI opinion.
 model: inherit
 skills: codex-agent-collaboration
+color: cyan
 ---
 
 # Codex Collaboration Agent
